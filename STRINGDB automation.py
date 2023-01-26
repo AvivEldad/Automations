@@ -49,14 +49,30 @@ try:
             This section is in charge of run the sql file and update the DB
             """
             try:
-
                 my_path = os.path.join("C:", os.sep, "Program Files", "PostgreSQL", "14", "bin")
                 os.environ['PGPASSWORD'] = '+rBGf%p$BgAX%d+'
-                delete_command = 'psql -U postgres -d STRING2 -c "DROP SCHEMA IF EXISTS ' + schema_name + ';"'  # TODO change to STRING
+                rename_command = 'psql -U postgres -d STRING2 -c "ALTER SCHEMA ' + schema_name + 'RENAME TO ' + schema_name + '2;"'
+                print("start rename old DB")
+                subprocess.run(rename_command, cwd=my_path, shell=True)
+                print("Done rename old DB")
+                write_command = 'psql -U postgres -d STRING2 < ' + 'D:/' + sql_file
+                print("start writing DB")
+                subprocess.run(write_command, cwd=my_path, shell=True)
+                print("Done writing DB")
+                delete_command = 'psql -U postgres -d STRING2 -c "DROP SCHEMA IF EXISTS '  + schema_name +  '2' + ' CASCADE;"'
                 print("start delete old DB")
                 subprocess.run(delete_command, cwd=my_path, shell=True)
                 print("Done deleting old DB")
-                write_command = 'psql -U postgres -d STRING2 < ' + 'D:/' + sql_file  # TODO change to STRING
+                os.remove("D:/" + sql_file)
+
+
+                my_path = os.path.join("C:", os.sep, "Program Files", "PostgreSQL", "14", "bin")
+                os.environ['PGPASSWORD'] = '+rBGf%p$BgAX%d+'
+                delete_command = 'psql -U postgres -d STRING2 -c "DROP SCHEMA IF EXISTS ' + schema_name + ';"'
+                print("start delete old DB")
+                subprocess.run(delete_command, cwd=my_path, shell=True)
+                print("Done deleting old DB")
+                write_command = 'psql -U postgres -d STRING2 < ' + 'D:/' + sql_file
                 print("start writing DB")
                 subprocess.run(write_command, cwd=my_path, shell=True)
                 print("Done writing DB")
