@@ -51,40 +51,28 @@ try:
             try:
                 my_path = os.path.join("C:", os.sep, "Program Files", "PostgreSQL", "14", "bin")
                 os.environ['PGPASSWORD'] = '+rBGf%p$BgAX%d+'
-                rename_command = 'psql -U postgres -d STRING2 -c "ALTER SCHEMA ' + schema_name + 'RENAME TO ' + schema_name + '2;"'
-                print("start rename old DB")
+                rename_command = 'psql -U postgres -d STRING -c "ALTER SCHEMA ' + schema_name + 'RENAME TO ' + schema_name + '2;"'
+                print("start rename old schema")
                 subprocess.run(rename_command, cwd=my_path, shell=True)
-                print("Done rename old DB")
-                write_command = 'psql -U postgres -d STRING2 < ' + 'D:/' + sql_file
-                print("start writing DB")
+                print("Done rename old schema")
+                write_command = 'psql -U postgres -d STRING < ' + 'D:/' + sql_file
+                print("start writing new schema to DB")
                 subprocess.run(write_command, cwd=my_path, shell=True)
-                print("Done writing DB")
-                delete_command = 'psql -U postgres -d STRING2 -c "DROP SCHEMA IF EXISTS '  + schema_name +  '2' + ' CASCADE;"'
-                print("start delete old DB")
+                print("Done writing new schema")
+                delete_command = 'psql -U postgres -d STRING -c "DROP SCHEMA IF EXISTS ' + schema_name + '2' + ' CASCADE;"'
+                print("start delete old schema")
                 subprocess.run(delete_command, cwd=my_path, shell=True)
-                print("Done deleting old DB")
+                print("Done deleting old schema")
                 os.remove("D:/" + sql_file)
 
 
-                my_path = os.path.join("C:", os.sep, "Program Files", "PostgreSQL", "14", "bin")
-                os.environ['PGPASSWORD'] = '+rBGf%p$BgAX%d+'
-                delete_command = 'psql -U postgres -d STRING2 -c "DROP SCHEMA IF EXISTS ' + schema_name + ';"'
-                print("start delete old DB")
-                subprocess.run(delete_command, cwd=my_path, shell=True)
-                print("Done deleting old DB")
-                write_command = 'psql -U postgres -d STRING2 < ' + 'D:/' + sql_file
-                print("start writing DB")
-                subprocess.run(write_command, cwd=my_path, shell=True)
-                print("Done writing DB")
-                os.remove("D:/" + sql_file)
-                print("done")
             except Exception as e:
-                print("Something went wrong with the exetarcion:", e)
+                print("Something went wrong with the updating of the schema:", e)
 
 
 
         except Exception as e:
-            print("Something went wrong with the exetarcion:", e)
+            print("Something went wrong with the extraction:", e)
 
 except Exception as e:
     print("Something went wrong with the download: ", e)
